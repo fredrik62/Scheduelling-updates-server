@@ -1,13 +1,21 @@
-
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+const express = require('express');
+const path = require('path');
+const cookieParser = require('cookie-parser');
+const logger = require('morgan');
 const cron = require("node-cron");
 const fs = require("fs");
+const mongoose = require('mongoose');
 
-// var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+//connection to db
+mongoose.Promise = Promise;
+mongoose
+  .connect('mongodb://localhost/player')
+  .then(() => {
+    console.log('Connected to Mongo!')
+  }).catch(err => {
+    console.error('Error connecting to mongo', err)
+  });
+
 
 var app = express();
 
@@ -17,12 +25,13 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
-cron.schedule("* * * * *", function() {
 var data = require('./schedulled-jobs/ge-data-schedule');
+
+cron.schedule("*/1 * * * *", function() {
+  data.getMeData();
  });
 
-// app.use('/', indexRouter);
-app.use('/users', usersRouter);
+
 
 // catch 404 and forward to error handler
 
