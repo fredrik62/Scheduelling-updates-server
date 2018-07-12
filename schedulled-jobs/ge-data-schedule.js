@@ -12,23 +12,24 @@ module.exports = {
         console.log("running a task every minute");
         const priceData = response.data;
         var newItemData = Item({
-         data: priceData
+         data: priceData,
+         updated: new Date()
+  
+        })
+        newItemData.save()
+        .then(item => {
+          console.log(item + " saved to database");
+        })
+        .catch(function (error) {
+          console.log(error);
+        });
+            
+        })
+  
+    
+    
+    }
+  }
           
       
           
-
-      })
-      newItemData.save()
-      .then(item => {
-        console.log(item + " saved to database");
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-          
-      })
-
-  
-  
-  }
-}

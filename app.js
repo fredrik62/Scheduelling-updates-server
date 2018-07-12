@@ -5,6 +5,7 @@ const logger = require('morgan');
 const cron = require("node-cron");
 const fs = require("fs");
 const mongoose = require('mongoose');
+const indexPage = require('./routes/index');
 
 //connection to db
 mongoose.Promise = Promise;
@@ -31,7 +32,7 @@ cron.schedule("*/1 * * * *", function() {
   data.getMeData();
  });
 
-
+app.use('/', indexPage);
 
 // catch 404 and forward to error handler
 
@@ -48,5 +49,9 @@ app.use((err, req, res, next) => {
     res.status(500).json({code: 'unexpected'});
   }
 });
+
+const listener = app.listen(8888, function(){
+  console.log('Listening on port ' + listener.address().port); //Listening on port 8888
+})
 
 module.exports = app;

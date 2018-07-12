@@ -4,6 +4,7 @@ const Schema   = mongoose.Schema;
 const itemSchema = new Schema({
   
     data: { type: Object },
+    updated: { type: Date, default: Date.now },
     // id: { type: Number },
     // name: { type: String},
     // members: { type: String},
