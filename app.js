@@ -8,6 +8,7 @@ const mongoose = require('mongoose');
 
 
 const indexPage = require('./routes/index');
+const idPage = require('./routes/graph');
 
 //connection to db
 mongoose.Promise = Promise;
@@ -29,12 +30,18 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 var data = require('./schedulled-jobs/ge-data-schedule');
+var graphData = require('./schedulled-jobs/ge-graph-data');
 
 cron.schedule("*/1 * * * *", function() {
   data.getMeData();
- });
+  graphData.getMeGraphData();
+});
+
+
 
 app.use('/', indexPage);
+app.use('/item', idPage);
+
 
 // catch 404 and forward to error handler
 

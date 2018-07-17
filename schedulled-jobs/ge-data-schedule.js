@@ -42,7 +42,7 @@ module.exports = {
          })
         newItemData.save()
         .then(item => {
-          console.log(item + " saved to database");
+          // console.log(item + " saved to database");
          })
 
         .catch(function (error) {
