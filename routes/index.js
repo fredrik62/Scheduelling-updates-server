@@ -5,8 +5,8 @@ const Item = require('../models/item-data');
 router.get('/', function (req, res) {
   Item.find({}, function (err, data) {
     if (err) {
-      res.send("Oops, something went wrong");
-      next();
+      console.log("Oops, something went wrong");
+       next();
     }
     res.json(data);
 
