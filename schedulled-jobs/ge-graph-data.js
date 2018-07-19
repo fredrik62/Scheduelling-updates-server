@@ -14,21 +14,21 @@ const GraphData = require('../models/item-graph');
 
 
 
-const getItem = (id) => {
+const getItem = (id,len) => {
   
   // return axios.get(base_URL + id);
 
-  for (var i = 0; i < id.length; i++) {
-    console.log(base_URL + id[i])
+  for (var i = 0; i < len; i++) {
+    return axios.get(base_URL + id[i]);
   }
  
 }
 
-const getItemGraph = (id) => {
+const getItemGraph = (id,len) => {
 
     // return axios.get(graph_URL + id);
-    for (var i = 0; i < id.length; i++) {
-      console.log(graph_URL + id[i])
+    for (var i = 0; i < len; i++) {
+      return axios.get(graph_URL + id[i]+ ".json");
     }
   
 }
@@ -75,9 +75,17 @@ module.exports = {
         ItemId.find({}) 
         .then((item) => {
          const itemIdArray =  item[0].id;
+         const arrLength = itemIdArray.length;
 
-        getItem(itemIdArray);
-        getItemGraph(itemIdArray);
+        for (var j = 0; j < arrLength; j++) {
+
+          axios.get(base_URL + itemIdArray[j])
+           .then(function (response) {
+            // handle success
+            console.log(response.data.item);
+          })
+
+        }
         
         // axios.all([getItem(), getItemGraph()])
         // .then(axios.spread((item, price) => {
@@ -85,20 +93,20 @@ module.exports = {
         //     console.log(item);
         //     console.log(price);
   
-            // const data = {
-            //     itemData: itemData,
-            //     graphData: graphData
-            // }
-          //   var graphInfo = GraphData({
-          //     item: data.itemData,
-          //     graph: data.graphData
-          //     })
+        //     const data = {
+        //         itemData: itemData,
+        //         graphData: graphData
+        //     }
+        //     var graphInfo = GraphData({
+        //       item: data.itemData,
+        //       graph: data.graphData
+        //       })
 
-          //     //saves item and graph data for that item
-          //     graphInfo.save()
-          //    .then(item => {
-          //     console.log(item + "graph data saved to database");
-          //  })
+        //       //saves item and graph data for that item
+        //       graphInfo.save()
+        //      .then(item => {
+        //       console.log(item + "graph data saved to database");
+        //    })
   
         // }
       // ))
