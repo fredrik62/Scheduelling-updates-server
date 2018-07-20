@@ -14,123 +14,70 @@ const GraphData = require('../models/item-graph');
 
 
 
-const getItem = (id,len) => {
-  
-  // return axios.get(base_URL + id);
-
-  for (var i = 0; i < len; i++) {
-    return axios.get(base_URL + id[i]);
-  }
- 
-}
-
-const getItemGraph = (id,len) => {
-
-    // return axios.get(graph_URL + id);
-    for (var i = 0; i < len; i++) {
-      return axios.get(graph_URL + id[i]+ ".json");
-    }
-  
-}
-
-
 module.exports = {
-  
-  getMeGraphData: function (req, res) {
-  let linkId = [];
-   Item.find( {} )
-   .then((res) => {
-     //removes all the previous ids so we don't store same information over and over again..
-    ItemId.remove({})
-    .then(() => {
-      console.log("ids deleted");
-       GraphData.remove({})
-      .then(() => {
-        console.log("graphs deleted");
-        
-      })
-    })
-     for (var key in res[0].data) {
-       if (res[0].data.hasOwnProperty(key)) {
-         //pushes all item ids to this array
-         let id = {
-           itemId: res[0].data[key].id
-         }
 
-         linkId.push(id.itemId);
-         var numberIds = linkId.filter(Number); 
+  getMeGraphData: function(req, res) {
+    let linkId = [];
+    Item.find({})
+      .then((res) => {
+        //removes all the previous ids so we don't store same information over and over again..
+        ItemId.remove({})
+          .then(() => {
+            console.log("ids deleted");
+            GraphData.remove({})
+              .then(() => {
+                console.log("graphs deleted");
+
+              })
+          })
+        for (var key in res[0].data) {
+          if (res[0].data.hasOwnProperty(key)) {
+            //pushes all item ids to this array
+            let id = {
+              itemId: res[0].data[key].id
+            }
+
+            linkId.push(id.itemId);
+            var numberIds = linkId.filter(Number);
+          }
         }
-      }
 
-   
-     //item-ids.js model
-     var sendIdsToDB = ItemId({
-     id: numberIds
-     })
-      //saves item ids to the database
-      sendIdsToDB.save()
-     .then(item => {
-        console.log("saved to database");
-        //go into the item id collection and get all the item ids for the axios request
-        ItemId.find({}) 
-        .then((item) => {
-         const itemIdArray =  item[0].id;
-         const arrLength = itemIdArray.length;
 
-        for (var j = 0; j < arrLength; j++) {
+        //item-ids.js model
+        var sendIdsToDB = ItemId({
+          id: numberIds
+        })
+        //saves item ids to the database
+        sendIdsToDB.save()
+          .then(item => {
+            console.log("saved to database");
+            //go into the item id collection and get all the item ids for the axios request
+            ItemId.find({})
+              .then((item) => {
+                const itemIdArray = item[0].id;
+                const arrLength = itemIdArray.length;
 
-          axios.get(base_URL + itemIdArray[j])
-           .then(function (response) {
-            // handle success
-            console.log(response.data.item);
+                for (var j = 0; j < arrLength; j++) {
+                  let urlArray = [base_URL + itemIdArray[j], graph_URL + itemIdArray[j] + '.json'] // unknown # of urls (1 or more)
+
+                  let promiseArray = urlArray.map(url => axios.get(url)); 
+                  axios.all(promiseArray)
+                    .then(function(results) {
+                      let temp = results.map(r => r.data);
+                      console.log(temp);
+                    });
+
+                }
+
+              })
+              .catch((error) => {
+                console.log(error);
+
+              })
           })
 
-        }
-        
-        // axios.all([getItem(), getItemGraph()])
-        // .then(axios.spread((item, price) => {
-            
-        //     console.log(item);
-        //     console.log(price);
-  
-        //     const data = {
-        //         itemData: itemData,
-        //         graphData: graphData
-        //     }
-        //     var graphInfo = GraphData({
-        //       item: data.itemData,
-        //       graph: data.graphData
-        //       })
 
-        //       //saves item and graph data for that item
-        //       graphInfo.save()
-        //      .then(item => {
-        //       console.log(item + "graph data saved to database");
-        //    })
-  
-        // }
-      // ))
-    })
-                .catch((error) => {
-                  console.log(error);
-                  
-                 })
-  })  
-  
-      
- 
-})
-}}
 
-      
-  
-  
-  
-
-  
-  
-  
-
-  
-  
-
+      })
+  }
+}
