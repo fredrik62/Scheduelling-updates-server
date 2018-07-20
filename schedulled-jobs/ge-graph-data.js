@@ -56,22 +56,34 @@ module.exports = {
               .then((item) => {
                 const itemIdArray = item[0].id;
                 const arrLength = itemIdArray.length;
-
+                var parsedData = [];
                 for (var j = 0; j < arrLength; j++) {
                   let urlArray = [base_URL + itemIdArray[j], graph_URL + itemIdArray[j] + '.json'] // unknown # of urls (1 or more)
 
                   let promiseArray = urlArray.map(url => axios.get(url)); 
                   axios.all(promiseArray)
                     .then(function(results) {
-                      let temp = results.map(r => r.data);
-                      console.log(temp);
-                    });
+                     
+                      var temp = results.map(r => r.data);
+                     
+                      var graph = GraphData({
+                      item: temp
+                     
+              
+                    
+                   })
+                  graph.save()
+                  .then(item => {
+                     console.log("graphdata saved to db!!!");
+                    })
+                       .catch((error) => {
+                         console.log(error);
+         
+                       })
+                    })
 
                 }
 
-              })
-              .catch((error) => {
-                console.log(error);
 
               })
           })

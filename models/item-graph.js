@@ -4,7 +4,7 @@ const Schema   = mongoose.Schema;
 const graphSchema = new Schema({
   
     item: { type: Object },
-    graph: { type: Object },
+    id: { type: String },
     updated: { type: Date, default: Date.now }
   
 });
