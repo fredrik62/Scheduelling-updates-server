@@ -3,8 +3,7 @@ const Schema   = mongoose.Schema;
 
 const graphSchema = new Schema({
   
-    item: { type: Object },
-    id: { type: String },
+    data: { type: Array },
     updated: { type: Date, default: Date.now }
   
 });

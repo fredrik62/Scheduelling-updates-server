@@ -56,30 +56,43 @@ module.exports = {
               .then((item) => {
                 const itemIdArray = item[0].id;
                 const arrLength = itemIdArray.length;
-                var parsedData = [];
                 for (var j = 0; j < arrLength; j++) {
                   let urlArray = [base_URL + itemIdArray[j], graph_URL + itemIdArray[j] + '.json'] // unknown # of urls (1 or more)
-
+                  
                   let promiseArray = urlArray.map(url => axios.get(url)); 
                   axios.all(promiseArray)
-                    .then(function(results) {
-                     
-                      var temp = results.map(r => r.data);
-                     
-                      var graph = GraphData({
-                      item: temp
-                     
-              
+                  .then(function(results) {
                     
-                   })
-                  graph.save()
-                  .then(item => {
-                     console.log("graphdata saved to db!!!");
-                    })
-                       .catch((error) => {
-                         console.log(error);
-         
-                       })
+                    var temp = results.map(r => r.data.item);
+
+                      var x = [];
+                      for (key in temp) {
+
+                      var itemObj = {
+                      id: temp[key].item[0].id,
+                      item: temp[key].item
+
+                      }
+                      x.push(itemObj);
+
+                      }
+                  
+                     var graph = GraphData({
+                          item: x
+                       
+                        })
+                        
+                                              
+                        graph.save()
+                        .then(item => {
+                           console.log("graphdata saved to db!!!");
+                          })
+                             .catch((error) => {
+                               console.log(error);
+               
+                             })
+
+
                     })
 
                 }
