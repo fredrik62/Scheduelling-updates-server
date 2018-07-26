@@ -12,8 +12,6 @@ const ItemId = require('../models/item-ids');
 
 const GraphData = require('../models/item-graph');
 
-
-
 module.exports = {
 
   getMeGraphData: function(req, res) {
@@ -42,7 +40,6 @@ module.exports = {
           }
         }
 
-
         //item-ids.js model
         var sendIdsToDB = ItemId({
           id: numberIds
@@ -55,53 +52,37 @@ module.exports = {
             ItemId.find({})
               .then((item) => {
                 const itemIdArray = item[0].id;
+                //length of idarray (arrlength)
                 const arrLength = itemIdArray.length;
                 for (var j = 0; j < arrLength; j++) {
                   let urlArray = [base_URL + itemIdArray[j], graph_URL + itemIdArray[j] + '.json'] // unknown # of urls (1 or more)
-                  
-                  let promiseArray = urlArray.map(url => axios.get(url)); 
+
+                  let promiseArray = urlArray.map(url => axios.get(url));
                   axios.all(promiseArray)
-                  .then(function(results) {
-                    
-                    var temp = results.map(r => r.data.item);
+                    .then(function(results) {
 
-                      var x = [];
-                      for (key in temp) {
+                      var temp = results.map(r => r.data.item);
+                      console.log(temp);
+                      var graph = GraphData({
+                        item: temp
 
-                      var itemObj = {
-                      id: temp[key].item[0].id,
-                      item: temp[key].item
+                      })
 
-                      }
-                      x.push(itemObj);
-
-                      }
-                  
-                     var graph = GraphData({
-                          item: x
-                       
-                        })
-                        
-                                              
-                        graph.save()
+                      graph.save()
                         .then(item => {
-                           console.log("graphdata saved to db!!!");
-                          })
-                             .catch((error) => {
-                               console.log(error);
-               
-                             })
+                          // console.log("graphdata saved to db!!!");
+                        })
 
+                        .catch((error) => {
+                          console.log(error);
 
+                        })
                     })
 
                 }
 
-
               })
           })
-
-
 
       })
   }
