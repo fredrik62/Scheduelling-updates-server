@@ -5,7 +5,7 @@ const ItemGraph = require('../models/item-graph');
 router.get('/:id', function (req, res) {
   const itemId = req.params.id
 
-
+  //_id: itemId
   ItemGraph.find({}, function (err, data) {
     if (err) {
       console.log("Oops, something went wrong");

@@ -61,7 +61,7 @@ module.exports = {
                           axios.all(promiseArray)
                             .then(function (results) {
 
-                              var temp = results.map(r => r.data.item);
+                              var temp = results.map(r => r.data);
                               console.log(temp);
                               var graph = GraphData({
                                 item: temp
